@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import math
 
+
 class Rabbit():
     def __init__(self, pos_x, pos_y, angle):
         self.pos_x = pos_x
@@ -22,15 +23,16 @@ class Rabbit():
             self.pos_x = new_x
             self.pos_y = new_y
 
+
 class Experiment():
     def __init__(self, iterations, rabbit):
         self.iterations = iterations
         self.rabbit = rabbit
-        
+
         self.setup_plot()
 
     def run(self, iterations=None):
-        if iterations == None:
+        if iterations is None:
             iterations = self.iterations
 
         for i in range(iterations):
@@ -55,6 +57,7 @@ class Experiment():
         self.ax1.set_aspect('equal')
         self.ax1.axes.get_xaxis().set_visible(False)
         self.ax1.axes.get_yaxis().set_visible(False)
+
 
 if __name__ == "__main__":
     my_rabbit = Rabbit(0.25, 0.75, math.pi/4)

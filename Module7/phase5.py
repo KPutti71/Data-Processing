@@ -3,11 +3,31 @@ import math
 import random
 
 
-class Rabbit():
+class Creature():
     def __init__(self, pos_x, pos_y, angle):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.angle = angle
+
+        self.speed = 0.01
+        self.color = 'black'
+
+    def step(self):
+        dx = math.cos(self.angle) * self.speed
+        dy = math.sin(self.angle) * self.speed
+
+        new_x, new_y = self.pos_x + dx, self.pos_y + dy
+
+        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
+            self.angle += math.pi
+        else:
+            self.pos_x = new_x
+            self.pos_y = new_y
+
+
+class Rabbit(Creature):
+    def __init__(self, pos_x, pos_y, angle):
+        super().__init__(pos_x, pos_y, angle)
 
         self.speed = 0.01
         self.color = 'blue'
@@ -16,23 +36,12 @@ class Rabbit():
         if random.random() < 0.2:
             self.angle += (random.random() - 0.5) * math.pi
 
-        dx = math.cos(self.angle) * self.speed
-        dy = math.sin(self.angle) * self.speed
-
-        new_x, new_y = self.pos_x + dx, self.pos_y + dy
-
-        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
-            self.angle += math.pi
-        else:
-            self.pos_x = new_x
-            self.pos_y = new_y
+        super().step()
 
 
-class Fox():
+class Fox(Creature):
     def __init__(self, pos_x, pos_y, angle):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.angle = angle
+        super().__init__(pos_x, pos_y, angle)
 
         self.speed = 0.03
         self.color = 'red'
@@ -41,16 +50,7 @@ class Fox():
         if random.random() < 0.2:
             self.angle += (random.random() - 0.5) * math.pi/2
 
-        dx = math.cos(self.angle) * self.speed
-        dy = math.sin(self.angle) * self.speed
-
-        new_x, new_y = self.pos_x + dx, self.pos_y + dy
-
-        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
-            self.angle += math.pi
-        else:
-            self.pos_x = new_x
-            self.pos_y = new_y
+        super().step()
 
 
 class Experiment():
@@ -100,7 +100,7 @@ class Experiment():
         self.ax1.scatter(creatures_x, creatures_y, c=creatures_colors)
 
         plt.draw()
-        plt.pause(0.01)
+        plt.pause(0.03)
         self.ax1.cla()
 
     def setup_plot(self):

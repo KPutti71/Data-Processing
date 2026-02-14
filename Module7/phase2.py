@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import math
 import random
 
+
 class Rabbit():
     def __init__(self, pos_x, pos_y, angle):
         self.pos_x = pos_x
@@ -23,15 +24,16 @@ class Rabbit():
             self.pos_x = new_x
             self.pos_y = new_y
 
+
 class Experiment():
     def __init__(self, iterations, number_of_rabbits):
         self.iterations = iterations
         self.number_of_rabbits = number_of_rabbits
-        self.rabbits= []
-        
+        self.rabbits = []
+
         self.add_rabbits(self.number_of_rabbits)
         self.setup_plot()
-    
+
     def add_rabbits(self, number_of_rabbits):
         for _ in range(number_of_rabbits):
             rd_x = random.random()
@@ -40,7 +42,7 @@ class Experiment():
             self.rabbits.append(Rabbit(rd_x, rd_y, rd_angle))
 
     def run(self, iterations=None):
-        if iterations == None:
+        if iterations is None:
             iterations = self.iterations
 
         for i in range(iterations):
@@ -54,8 +56,8 @@ class Experiment():
     def draw(self):
         self.ax1.axis([0, 1, 0, 1])
 
-        rabbits_x = [r.pos_x for r in self.rabbits] 
-        rabbits_y = [r.pos_y for r in self.rabbits] 
+        rabbits_x = [r.pos_x for r in self.rabbits]
+        rabbits_y = [r.pos_y for r in self.rabbits]
         self.ax1.scatter(rabbits_x, rabbits_y)
         # TODO plot rabbit
 
@@ -68,6 +70,7 @@ class Experiment():
         self.ax1.set_aspect('equal')
         self.ax1.axes.get_xaxis().set_visible(False)
         self.ax1.axes.get_yaxis().set_visible(False)
+
 
 if __name__ == "__main__":
     my_experiment = Experiment(100, 10)

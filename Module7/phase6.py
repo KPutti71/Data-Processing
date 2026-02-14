@@ -3,11 +3,32 @@ import math
 import random
 
 
-class Rabbit():
+class Creature():
     def __init__(self, pos_x, pos_y, angle):
         self.pos_x = pos_x
         self.pos_y = pos_y
         self.angle = angle
+
+        self.alive = True
+        self.speed = 0.01
+        self.color = 'black'
+
+    def step(self):
+        dx = math.cos(self.angle) * self.speed
+        dy = math.sin(self.angle) * self.speed
+
+        new_x, new_y = self.pos_x + dx, self.pos_y + dy
+
+        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
+            self.angle += math.pi
+        else:
+            self.pos_x = new_x
+            self.pos_y = new_y
+
+
+class Rabbit(Creature):
+    def __init__(self, pos_x, pos_y, angle):
+        super().__init__(pos_x, pos_y, angle)
 
         self.speed = 0.01
         self.color = 'blue'
@@ -16,41 +37,26 @@ class Rabbit():
         if random.random() < 0.2:
             self.angle += (random.random() - 0.5) * math.pi
 
-        dx = math.cos(self.angle) * self.speed
-        dy = math.sin(self.angle) * self.speed
-
-        new_x, new_y = self.pos_x + dx, self.pos_y + dy
-
-        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
-            self.angle += math.pi
-        else:
-            self.pos_x = new_x
-            self.pos_y = new_y
+        super().step()
 
 
-class Fox():
+class Fox(Creature):
     def __init__(self, pos_x, pos_y, angle):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
-        self.angle = angle
+        super().__init__(pos_x, pos_y, angle)
 
+        self.hunger = 0
         self.speed = 0.03
         self.color = 'red'
 
     def step(self):
+        if self.hunger >= 80:
+            self.alive = False
+        self.hunger += 1
+
         if random.random() < 0.2:
             self.angle += (random.random() - 0.5) * math.pi/2
 
-        dx = math.cos(self.angle) * self.speed
-        dy = math.sin(self.angle) * self.speed
-
-        new_x, new_y = self.pos_x + dx, self.pos_y + dy
-
-        if new_x < 0 or new_y < 0 or new_x > 1 or new_y > 1:
-            self.angle += math.pi
-        else:
-            self.pos_x = new_x
-            self.pos_y = new_y
+        super().step()
 
 
 class Experiment():
@@ -78,6 +84,11 @@ class Experiment():
             rd_angle = random.random() * 2 * math.pi
             self.creatures.append(Fox(rd_x, rd_y, rd_angle))
 
+    def resolve_deaths(self):
+        for i in reversed(range(len(self.creatures))):
+            if not self.creatures[i].alive:
+                self.creatures.pop(i)
+
     def run(self, iterations=None):
         if iterations is None:
             iterations = self.iterations
@@ -89,6 +100,7 @@ class Experiment():
     def step(self):
         for r in self.creatures:
             r.step()
+        self.resolve_deaths()
 
     def draw(self):
         self.ax1.axis([0, 1, 0, 1])
@@ -100,7 +112,7 @@ class Experiment():
         self.ax1.scatter(creatures_x, creatures_y, c=creatures_colors)
 
         plt.draw()
-        plt.pause(0.01)
+        plt.pause(0.03)
         self.ax1.cla()
 
     def setup_plot(self):
